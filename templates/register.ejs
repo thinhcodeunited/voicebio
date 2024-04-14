@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Đăng ký khách hàng</title>
+
+	<!-- Global stylesheets -->
+	<link href="/assets/fonts/inter/inter.css" rel="stylesheet" type="text/css">
+	<link href="/assets/icons/phosphor/styles.min.css" rel="stylesheet" type="text/css">
+	<link href="/assets_core/css/ltr/all.min.css" rel="stylesheet" type="text/css">
+	<!-- /global stylesheets -->
+
+	<!-- Core JS files -->
+	<script src="/assets/js/jquery/jquery.min.js"></script>
+	<script src="/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+	<!-- /core JS files -->
+
+	<!-- Theme JS files -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="/assets/js/vendor/notifications/noty.min.js"></script>
+	<script src="/assets_core/js/app.js"></script>
+	<script>
+		const _componentNoty = function (text, type) {
+			if (typeof Noty == 'undefined') {
+				console.warn('Warning - noty.min.js is not loaded.');
+				return;
+			}
+
+			// Override Noty defaults
+			Noty.overrideDefaults({
+				theme: 'limitless',
+				layout: 'topRight',
+				type: 'alert',
+				timeout: 2500
+			});
+
+			return new Noty({ text, type }).show();
+		};
+	</script>
+	<!-- /theme JS files -->
+
+</head>
+
+<body>
+	<!-- Page content -->
+	<div class="page-content">
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Inner content -->
+			<div class="content-inner">
+
+				<!-- Content area -->
+				<div class="content d-flex justify-content-center align-items-center">
+
+					<!-- Container -->
+					<div class="flex-fill">
+
+						<div class="row">
+							<div class="col-lg-8 offset-lg-2">
+								<div class="card">
+									<div class="card-header">
+										<h5 class="mb-0">Đăng ký khách hàng</h5>
+									</div>
+
+									<div class="card-body" data-select2-id="46">
+										<form action="#" data-select2-id="45">
+											<div class="row mb-3">
+												<label class="col-lg-2 col-form-label">Họ và tên</label>
+												<div class="col-lg-10">
+													<input type="text" class="form-control" name="customer_name"
+														placeholder="Nhập họ và tên">
+												</div>
+											</div>
+
+											<div class="row mb-3">
+												<label class="col-lg-2 col-form-label">Số điện thoại</label>
+												<div class=" col-lg-10 form-control-feedback form-control-feedback-end">
+													<input type="text" class="form-control" name="customer_phone"
+														placeholder="Nhập số điện thoại">
+													<div class="form-control-feedback-icon">
+														<div class="text-success me-1" id="customer_phone_loading"
+															role="status">
+															<span class="visually-hidden">Loading...</span>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<div class="row mb-3">
+												<label class="col-lg-2 col-form-label">Hạng khách hàng</label>
+												<div class="col-lg-10">
+													<input type="text" class="form-control" name="customer_rank"
+														placeholder="Nhập hạng khách hàng">
+												</div>
+											</div>
+
+											<div class="row mb-3">
+												<label class="col-lg-2 col-form-label">Ghi chú</label>
+												<div class="col-lg-10">
+													<textarea rows="3" cols="3" class="form-control"
+														name="customer_note" placeholder="Nhập ghi chú"></textarea>
+												</div>
+											</div>
+											<fieldset>
+												<legend class="fs-base fw-bold border-bottom pb-2 mb-3">Xác thực khách
+													hàng</legend>
+
+												<div class="row mb-3">
+													<div
+														class="col-lg-12 d-flex align-items-center justify-content-between">
+														<div
+															class="form-control-feedback form-control-feedback-end w-100">
+															<input type="text" class="form-control"
+																placeholder="Câu lệnh 1 đang chờ..." data-item="text_1"
+																readonly>
+															<div class="form-control-feedback-icon">
+																<i class="" id="verify_icon_1"></i>
+															</div>
+															<input type="hidden" name="customer_filename_1" />
+														</div>
+
+														<div class="mx-2 d-flex align-items-center record_warp_1">
+															<a href="javascript:void(0)" id="record_btn_1"
+																class="badge bg-secondary rounded-pill p-1 mx-1"
+																data-index="1" onclick="recordAction(this)">
+																<i class="ph-microphone"></i>
+															</a>
+
+															<audio id="audio_player_1" controls></audio>
+														</div>
+													</div>
+												</div>
+
+												<div class="row mb-3">
+													<div
+														class="col-lg-12 d-flex align-items-center justify-content-between">
+														<div
+															class="form-control-feedback form-control-feedback-end w-100">
+															<input type="text" class="form-control"
+																placeholder="Câu lệnh 2 đang chờ..." data-item="text_2"
+																readonly>
+															<div class="form-control-feedback-icon">
+																<i class="" id="verify_icon_2"></i>
+															</div>
+															<input type="hidden" name="customer_filename_2" />
+														</div>
+														<div class="mx-2 d-flex align-items-center record_warp_2">
+															<a href="javascript:void(0)" id="record_btn_2"
+																class="badge bg-secondary rounded-pill p-1 mx-1"
+																data-index="2" onclick="recordAction(this)">
+																<i class="ph-microphone"></i>
+															</a>
+															<audio id="audio_player_2" controls></audio>
+														</div>
+													</div>
+												</div>
+
+												<div class="row mb-3">
+													<div
+														class="col-lg-12 d-flex align-items-center justify-content-between">
+														<div
+															class="form-control-feedback form-control-feedback-end w-100">
+															<input type="text" class="form-control"
+																placeholder="Câu lệnh 3 đang chờ..." data-item="text_3"
+																readonly>
+															<div class="form-control-feedback-icon">
+																<i class="" id="verify_icon_3"></i>
+															</div>
+															<input type="hidden" name="customer_filename_3" />
+														</div>
+														<div class="mx-2 d-flex align-items-center record_warp_3">
+															<a href="javascript:void(0)" id="record_btn_3"
+																class="badge bg-secondary rounded-pill p-1 mx-1"
+																data-index="3" onclick="recordAction(this)">
+																<i class="ph-microphone"></i>
+															</a>
+															<audio id="audio_player_3" controls></audio>
+														</div>
+													</div>
+												</div>
+											</fieldset>
+
+											<div class="text-end pt-3">
+												<button type="button" class="btn btn-primary"
+													onclick="registerAction(this)">Đăng ký <i
+														class="ph-paper-plane-tilt ms-2"></i></button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<!-- /container -->
+
+				</div>
+				<!-- /content area -->
+
+
+				<!-- Footer -->
+
+				<!-- /footer -->
+
+			</div>
+			<!-- /inner content -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	<script>
+		const isValidPhoneNumber = (phone) => {
+			return !!phone && typeof phone === 'string' && phone.match(/^(0|\+84)([3|5|7|8|9])+([0-9]{8})$/g);
+		}
+
+		$(document).ready(function ($) {
+			$("input[name='customer_phone']").on('change', async () => {
+				const inputEle = $("input[name='customer_phone']");
+				if (!isValidPhoneNumber(inputEle.val())) {
+					_componentNoty("Vui lòng nhập đúng số điện thoại!", "error");
+					$("input[name='customer_phone']").focus();
+					return;
+				}
+
+				$("#customer_phone_loading").addClass('spinner-border');
+				const res = await axios.post('/api/register/check-phone', { phone: inputEle.val() });
+
+				$("#customer_phone_loading").removeClass('spinner-border');
+
+				if (!res || !res.data || !res.data.message) {
+					_componentNoty("Lỗi không xác định", "error");
+					return;
+				}
+				const { status, message, checkText } = res.data;
+				_componentNoty(message, (status ? 'success' : 'error'));
+
+				// Reset lại toàn bộ dữ liệu verify
+				for (let i = 1; i <= 3; i++) {
+					$(`.record_warp_${i}`).empty().append(`<a href="javascript:void(0)" id="record_btn_${i}" class="badge bg-secondary rounded-pill p-1 mx-1" data-index="${i}" onclick="recordAction(this)"><i class="ph-microphone"></i></a><audio id="audio_player_${i}" controls=""></audio>`);
+					$(`#verify_icon_${i}`).removeClass();
+					$(`input[data-item='text_${i}']`).val('');
+					$(`input[name="customer_filename_${i}"]`).val('');
+				}
+				// Bổ sung dữ liệu vào trường 1
+				if (checkText) $("input[data-item='text_1']").val(checkText);
+				return;
+			});
+		});
+	</script>
+	<script>
+		const mediaRecorder = [];
+
+		function startRecording(index) {
+			const audioPlayer = $("audio").filter(`[data-item='audio_player_${index}']`);
+
+			const chunks = [];
+			navigator.mediaDevices.getUserMedia({ audio: true })
+				.then(stream => {
+					mediaRecorder[index] = new MediaRecorder(stream);
+					mediaRecorder[index].ondataavailable = function (event) {
+						chunks.push(event.data);
+					}
+
+					mediaRecorder[index].onstop = async function () {
+						const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+						const audioURL = URL.createObjectURL(audioBlob);
+						$(`#audio_player_${index}`).attr('src', audioURL);
+
+						const formData = new FormData();
+						formData.append('audio', audioBlob);
+						formData.append('phone', $("input[name='customer_phone']").val());
+						formData.append('index', index);
+						formData.append('checkText', $(`input[data-item='text_${index}']`).val());
+
+						const res = await axios.post('/api/register/verify-voiceotp', formData);
+						if (!res || !res.data || !res.data.message) {
+							_componentNoty("Lỗi không xác định", "error");
+							return;
+						}
+						const { status, message, nextIndex, nextText, fileName } = res.data;
+						if (status) {
+							// Verify thành công, tiếp tục
+							$(`#verify_icon_${index}`).removeClass('ph-x-circle text-danger').addClass('ph-check-circle text-success');
+							$(`#record_btn_${index}`).remove();
+
+							// Lưu giữ liệu
+							if (nextText) $(`input[data-item='text_${nextIndex}']`).val(nextText);
+							if (fileName) $(`input[name="customer_filename_${index}"]`).val(fileName);
+						} else {
+							$(`#verify_icon_${index}`).removeClass('ph-check-circle text-success').addClass('ph-x-circle text-danger');
+						}
+
+						_componentNoty(message, (status ? 'success' : 'error'));
+						return;
+					}
+
+					mediaRecorder[index].start();
+				})
+				.catch(error => {
+					console.error('Error accessing microphone:', error);
+					_componentNoty("Lỗi không xác định", "error");
+				});
+		}
+
+		function stopRecording(index) {
+			mediaRecorder[index].stop();
+		}
+
+		const recordAction = (ele) => {
+			const index = $(ele).data('index');
+			const textBox = $("input").filter(`[data-item='text_${index}']`);
+			if (textBox.val() == '') {
+				_componentNoty("Vui lòng xác thực thông tin trước đó", "error");
+				return;
+			}
+
+			let isRecording = $(ele).hasClass("recording");
+			if (!isRecording) {
+				$(ele).addClass("recording bg-danger");
+				startRecording(index);
+
+			} else {
+				$(ele).removeClass("recording bg-danger");
+				stopRecording(index);
+			}
+		}
+
+		const registerAction = async (ele) => {
+			const customer_name = $(`input[name="customer_name"]`);
+			const customer_phone = $(`input[name="customer_phone"]`);
+			const customer_rank = $(`input[name="customer_rank"]`);
+			const customer_note = $(`textarea[name="customer_note"]`);
+			const customer_filename_1 = $(`input[name="customer_filename_1"]`);
+			const customer_filename_2 = $(`input[name="customer_filename_2"]`);
+			const customer_filename_3 = $(`input[name="customer_filename_3"]`);
+
+			if (customer_name.val() == '') {
+				_componentNoty("Vui lòng nhập tên khách hàng", "error");
+				customer_name.focus();
+				return;
+			}
+
+			if (customer_phone.val() == '') {
+				_componentNoty("Vui lòng nhập số điện thoại khách hàng", "error");
+				customer_phone.focus();
+				return;
+			}
+
+			if (customer_rank.val() == '') {
+				_componentNoty("Vui lòng nhập hạng khách hàng", "error");
+				customer_rank.focus();
+				return;
+			}
+
+			if (customer_note.val() == '') {
+				_componentNoty("Vui lòng nhập ghi chú", "error");
+				customer_note.focus();
+				return;
+			}
+
+			if (customer_filename_1.val() == '' ||
+				customer_filename_2.val() == '' ||
+				customer_filename_3.val() == '') {
+				_componentNoty("Vui lòng xác thực tất cả các thông tin đăng ký", "error");
+				return;
+			}
+
+
+			const res = await axios.post('/api/register', {
+				customer_name: customer_name.val(),
+				customer_phone: customer_phone.val(),
+				customer_rank: customer_rank.val(),
+				customer_note: customer_note.val(),
+				customer_filename_1: customer_filename_1.val(),
+				customer_filename_2: customer_filename_2.val(),
+				customer_filename_3: customer_filename_3.val()
+			});
+
+			if (!res || !res.data) {
+				_componentNoty("Lỗi không xác định", "error");
+				return;
+			}
+			const { status, message } = res.data;
+
+			if (typeof status == "undefined" || !message) {
+				_componentNoty("Lỗi không xác định", "error");
+				return;
+			}
+
+			if (!status) _componentNoty(message, "error");
+
+			_componentNoty("Đăng ký thành công, trang sẽ tự động làm mới sau 2s", "success");
+			setTimeout(function () {
+				window.location.reload();
+			}, 2000);
+			return;
+		}
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Thanh toán</title>
+
+	<!-- Global stylesheets -->
+	<link href="/assets/fonts/inter/inter.css" rel="stylesheet" type="text/css">
+	<link href="/assets/icons/phosphor/styles.min.css" rel="stylesheet" type="text/css">
+	<link href="/assets_core/css/ltr/all.min.css" rel="stylesheet" type="text/css">
+	<!-- /global stylesheets -->
+
+	<!-- Core JS files -->
+	<script src="/assets/js/jquery/jquery.min.js"></script>
+	<script src="/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+	<!-- /core JS files -->
+
+	<!-- Theme JS files -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="/assets/js/vendor/notifications/noty.min.js"></script>
+	<script src="/assets_core/js/app.js"></script>
+	<script>
+		const _componentNoty = function (text, type) {
+			if (typeof Noty == 'undefined') {
+				console.warn('Warning - noty.min.js is not loaded.');
+				return;
+			}
+
+			// Override Noty defaults
+			Noty.overrideDefaults({
+				theme: 'limitless',
+				layout: 'topRight',
+				type: 'alert',
+				timeout: 2500
+			});
+
+			return new Noty({ text, type }).show();
+		};
+	</script>
+	<!-- /theme JS files -->
+
+</head>
+
+<body>
+	<!-- Page content -->
+	<div class="page-content">
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Inner content -->
+			<div class="content-inner">
+
+				<!-- Content area -->
+				<div class="content d-flex justify-content-center align-items-center">
+
+					<!-- Container -->
+					<div class="flex-fill">
+
+						<div class="row">
+							<div class="col-lg-8 offset-lg-2">
+								<div class="card">
+									<div class="card-header">
+										<h5 class="mb-0">Thanh toán đơn hàng</h5>
+									</div>
+
+									<div class="card-body">
+										<form action="#">
+											<div class="row mb-3">
+												<div class="col-lg-12">
+													<textarea rows="3" cols="3" class="form-control"
+														name="customer_info" placeholder="Mời quý khách ấn vào nút đọc số điện thoại và đọc số điện thoại của mình" readonly></textarea>
+												</div>
+											</div>
+											<div class="text-center">
+												<button type="button" class="btn btn-primary" id="getinfo-btn"
+													onclick="getInfoAction(this)">Đọc số điện thoại <i class="ph-microphone ms-2"></i></button>
+												<button type="button" class="btn btn-primary" id="confirm-btn" style="display: none;"
+													onclick="confirmPayment(this)">Xác nhận thanh toán <i class="ph-check-circle ms-2"></i></button>
+												<button type="button" class="btn btn-primary" id="payment-btn" style="display: none;"
+													onclick="paymentAction(this)">Ghi âm <i class="ph-microphone ms-2"></i></button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<!-- /container -->
+
+				</div>
+				<!-- /content area -->
+
+
+				<!-- Footer -->
+
+				<!-- /footer -->
+
+			</div>
+			<!-- /inner content -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+
+	<script>
+		let mediaRecorder;
+
+		function startRecording() {
+			_componentNoty("Bắt đầu ghi âm, xin vui lòng đọc số điện thoại của quý khách", "info");
+			$("textarea[name='customer_info']").val("");
+
+			const chunks = [];
+			navigator.mediaDevices.getUserMedia({ audio: true })
+				.then(stream => {
+					mediaRecorder = new MediaRecorder(stream);
+					mediaRecorder.ondataavailable = function (event) {
+						chunks.push(event.data);
+					}
+
+					mediaRecorder.onstop = async function () {
+						const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+
+						const formData = new FormData();
+						formData.append('audio', audioBlob);
+
+						const res = await axios.post('/api/payment/get-data', formData);
+						if (!res || !res.data || !res.data.message) {
+							_componentNoty("Lỗi không xác định", "error");
+							return;
+						}
+
+						const { status, message, text } = res.data;
+
+						_componentNoty(message, (status ? 'success' : 'error'));
+						if (status) {
+							if (text) $("textarea[name='customer_info']").val(text);
+							$("#getinfo-btn").hide();
+							$("#payment-btn").hide();
+							$("#confirm-btn").show();
+						}
+						return;
+					}
+
+					mediaRecorder.start();
+				})
+				.catch(error => {
+					console.error('Error accessing microphone:', error);
+					_componentNoty("Lỗi không xác định", "error");
+				});
+		}
+
+		function stopRecording() {
+			mediaRecorder.stop();
+		}
+
+		const getInfoAction = (ele) => {
+			let isRecording = $(ele).hasClass("recording");
+			if (!isRecording) {
+				$(ele).addClass("recording bg-danger border-danger");
+				startRecording();
+			} else {
+				$(ele).removeClass("recording bg-danger border-danger");
+				stopRecording();
+			}
+		}
+
+		const confirmPayment = (ele) => {
+			$("textarea[name='customer_info']").val(`Quý khách vui lòng đọc câu sau để xác nhận giọng nói “Mã số xác thực của tôi là 170510"`);
+			$("#getinfo-btn").hide();
+			$("#confirm-btn").hide();
+			$("#payment-btn").show();
+		}
+	</script>
+
+<script>
+	let mediaRecorder2;
+
+	function startRecording2() {
+		_componentNoty("Bắt đầu ghi âm, xin vui lòng đọc mã xác thực", "info");
+
+		const chunks = [];
+		navigator.mediaDevices.getUserMedia({ audio: true })
+			.then(stream => {
+				mediaRecorder2 = new MediaRecorder(stream);
+				mediaRecorder2.ondataavailable = function (event) {
+					chunks.push(event.data);
+				}
+
+				mediaRecorder2.onstop = async function () {
+					const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+
+					const formData = new FormData();
+					formData.append('audio', audioBlob);
+
+					const res = await axios.post('/api/payment/verify', formData);
+					if (!res || !res.data || !res.data.message) {
+						_componentNoty("Lỗi không xác định", "error");
+						return;
+					}
+
+					const { status, message, text } = res.data;
+
+					_componentNoty(message, (status ? 'success' : 'error'));
+
+					if (status) {
+						if (text) $("textarea[name='customer_info']").val(text);
+						$("#getinfo-btn").hide();
+						$("#payment-btn").hide();
+						$("#confirm-btn").hide();
+					}
+					return;
+				}
+
+				mediaRecorder2.start();
+			})
+			.catch(error => {
+				console.error('Error accessing microphone:', error);
+				_componentNoty("Lỗi không xác định", "error");
+			});
+	}
+
+	function stopRecording2() {
+		mediaRecorder2.stop();
+	}
+
+	const paymentAction = (ele) => {
+		let isRecording = $(ele).hasClass("recording");
+		if (!isRecording) {
+			$(ele).addClass("recording bg-danger border-danger");
+			startRecording2();
+		} else {
+			$(ele).removeClass("recording bg-danger border-danger");
+			stopRecording2();
+		}
+	}
+</script>
+</body>
+
+</html>
