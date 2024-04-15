@@ -1,44 +1,47 @@
-const ssoLoginConfig = require('../../../config/sso_login');
-const { isValidPhonenumber, parseCommonPhone } = require('../../../helper/data_type');
-const login_app = require('../../../helper/api/login_app');
+const axios = require('axios');
+const querystring = require('querystring');
+const redisHelper = require('../../helper/redis');
+const moment = require('moment');
 
 module.exports = async (ctx) => {
-    // Dừng hoạt động login nếu đã có ecokey
-    if (ctx.session.ecosystem_key) return ctx.throw(ctx.i18n.__('MSG_SYSTEM_ERROR_OCCURRED'));
-
-    const { username, password, query, service } = ctx.request.body;
-    const service_code = ssoLoginConfig()[service].code;
+    const { username, password } = ctx.request.body;
 
     if (!username) {
-        ctx.flash('state.notifier', { status: false, message: ctx.i18n.__('MSG_USERNAME_REQUIRED') });
-        return ctx.redirect(process.env.APP_AUTH_URL + (query ? '?' + query : ''));
+        ctx.flash('state.notifier', { status: false, message: "Vui lòng nhập username" });
+        return ctx.redirect(process.env.APP_URL + "/login");
     }
 
     if (!password) {
-        ctx.flash('state.notifier', { status: false, message: ctx.i18n.__('MSG_PASSWORD_REQUIRED') });
-        return ctx.redirect(process.env.APP_AUTH_URL + (query ? '?' + query : ''));
+        ctx.flash('state.notifier', { status: false, message: "Vui lòng nhập mật khẩu" });
+        return ctx.redirect(process.env.APP_URL + "/login");
     }
 
-    if (isValidPhonenumber(username)) {
-        username = parseCommonPhone(username);
+    try {
+        const headers = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        };
+        const res = await axios.post(process.env.API_URL + '/api/voicebio/auth', querystring.stringify({ username, password }), { headers });
+        if (!res || !res.data) {
+            ctx.flash('state.notifier', { status: false, message: "Đăng nhập thất bại" });
+            return ctx.redirect(process.env.APP_URL + "/login");
+        }
+        const { status, msg, token, expire_time } = res.data;
+        if (status != "0") {
+            ctx.flash('state.notifier', { status: false, message: "Đăng nhập thất bại" });
+            return ctx.redirect(process.env.APP_URL + "/login");
+        }
+
+        const redisTime = Math.round((expire_time - moment().valueOf()) / 1000);
+
+        redisHelper.setSingleRedis(token, 1, redisTime);
+        ctx.session.accessToken = token;
+
+        // That's ok , let go to profile
+        ctx.flash('state.notifier', { status: true, message: "Đăng nhập thành công" });
+        return ctx.redirect(process.env.APP_URL);
+    } catch (err) {
+        console.log(err)
+        ctx.flash('state.notifier', { status: false, message: "Lỗi không xác định" });
+        return ctx.redirect("/login");
     }
-
-    // Login vào hệ thống
-    const res = await login_app({ ctx, username, password, service_code });
-
-    if (!res) {
-        ctx.flash('state.notifier', { status: false, message: ctx.i18n.__('MSG_LOGIN_FAIL') });
-        return ctx.redirect(process.env.APP_AUTH_URL + (query ? '?' + query : ''));
-    }
-
-    if (!res.status) {
-        ctx.flash('state.notifier', { status: false, message: res.message });
-        return ctx.redirect(process.env.APP_AUTH_URL + (query ? '?' + query : ''));
-    }
-
-    // It's ok, store access token
-    ctx.session.ecosystem_key = res.data.ecosystem_key;
-
-    // That's ok , let go to profile
-    return ctx.redirect(res.data.callback);
 }

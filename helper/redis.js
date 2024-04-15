@@ -16,4 +16,11 @@ const setSingleRedisForever = (key, value) => {
   return redisClient.SET(key, value);
 }
 
-module.exports = { verifyRedis, getSingleRedis, removeSingleRedis, setSingleRedisForever }
+const setSingleRedis = async (key, value, time) => {
+  await Promise.all([
+    redisClient.SET(key, value),
+    redisClient.EXPIRE(key, time),
+  ]);
+}
+
+module.exports = { verifyRedis, getSingleRedis, removeSingleRedis, setSingleRedisForever, setSingleRedis }
