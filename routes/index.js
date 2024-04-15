@@ -8,7 +8,7 @@ const checkAuthMiddleware = require('../middleware/authenticate');
 router.use(checkAuthMiddleware);
 
 router.get('/', (ctx) => {
-    return ctx.render('register', {});
+    return ctx.render('client/layout', {});
 });
 
 // router.get('/info', (ctx) => {

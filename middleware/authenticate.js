@@ -5,7 +5,10 @@ module.exports = async (ctx, next) => {
     if (!accessToken) return ctx.redirect(process.env.APP_URL + "/login");
 
     const checkLife = await redisHelper.getSingleRedis(accessToken);
-    if (!checkLife) return ctx.redirect(process.env.APP_URL + "/login");
+    if (!checkLife) {
+        ctx.session.accessToken = null;
+        return ctx.redirect(process.env.APP_URL + "/login");
+    }
 
     return next();
 }
