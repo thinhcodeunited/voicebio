@@ -3,7 +3,6 @@ require('./bin/connect');
 const Koa = require('koa');
 const app = new Koa();
 const { userAgent } = require('koa-useragent');
-const logger = require('koa-morgan');
 const bodyParser = require('koa-bodyparser');
 const render = require('koa-ejs');
 const serve = require('koa-static');
@@ -11,12 +10,11 @@ const path = require('path');
 const flash = require('koa-better-flash');
 
 app.use(userAgent);
-app.use(logger('dev'));
 app.use(bodyParser());
 
 // Sessions
 const session = require('koa-session');
-app.keys = ['vision-session-key']
+app.keys = ['app-session-key'];
 app.use(session({}, app));
 app.use(flash());
 

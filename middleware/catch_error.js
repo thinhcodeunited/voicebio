@@ -1,17 +1,18 @@
 module.exports = async (ctx, next) => {
     try {
         await next();
-        // ending life cycle
         const status = ctx.status || 404;
         if (status === 404) {
-            ctx.throw(404);
+            await ctx.render('error', {
+                status,
+                message: "Không tìm thấy tài nguyên"
+            });
         }
     } catch (err) {
-        console.log(err);
-        ctx.body = {
-            status: false,
-            error_code: err.status || 500,
-            error_string: err.error_string || 'unknown_error'
-        };
+        const status = err.status || 500;
+        await ctx.render('error', {
+            status,
+            message: err.message || "Lỗi không xác định"
+        });
     }
 }

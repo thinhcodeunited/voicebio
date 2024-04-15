@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="icon" type="image/x-icon" href="/images/default_favicon.ico">
+
+    <!-- Global stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
+        type="text/css">
+    <link href="/global_assets/css/icons/icomoon/styles.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="/global_assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/layout_profile.css" rel="stylesheet" type="text/css">
+
+    <!-- Core JS files -->
+    <script src="/global_assets/js/main/jquery.min.js"></script>
+    <script src="/global_assets/js/main/bootstrap.bundle.min.js"></script>
+    <!-- /core JS files -->
+
+    <script src="/global_assets/js/plugins/extensions/jquery_ui/interactions.min.js"></script>
+    <script src="/global_assets/js/plugins/forms/selects/select2.min.js"></script>
+    <script src="/assets/js/custom_form_select2.js"></script>
+    <script src="/assets/js/custom.js"></script>
+
+    <!-- Theme JS files -->
+    <script src="/assets/js/app.js"></script>
+    <script src="/global_assets/js/plugins/notifications/jgrowl.min.js"></script>
+    <script src="/global_assets/js/plugins/notifications/noty.min.js"></script>
+    <script>
+        const envApiUrl = JSON.parse('<%- JSON.stringify(envApiUrl) %>');
+        const envClientUrl = JSON.parse('<%- JSON.stringify(envClientUrl) %>');
+        const accessToken = JSON.parse('<%- JSON.stringify(accessToken) %>');
+        const userMoney = JSON.parse('<%-  JSON.stringify(user.money) %>');
+        const _componentNoty = function (text, type) {
+            if (typeof Noty == 'undefined') {
+                console.warn('Warning - noty.min.js is not loaded.');
+                return;
+            }
+
+            // Override Noty defaults
+            Noty.overrideDefaults({
+                theme: 'limitless',
+                layout: 'topRight',
+                type: 'alert',
+                timeout: 2500
+            });
+
+            return new Noty({
+                text,
+                type
+            }).show();
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const stateMsg = JSON.parse('<%- JSON.stringify(stateMsg) %>');
+            if (stateMsg) {
+                let message = (stateMsg.message) ? stateMsg.message : '';
+                let type = (typeof stateMsg.status !== 'undefined' && !stateMsg.status) ? 'error' : 'success';
+
+                // Show message error
+                if (message) _componentNoty(message, type);
+            }
+        });
+
+                // Spinner icon
+        function spinnerThis(e) {
+            jQuery('.stop-spinner').removeClass('spinner');
+            jQuery(e).children('i').addClass('spinner');
+        }
+
+        function stopSpinnerThis(e) {
+            jQuery(e).children('i').removeClass('spinner');
+        }
+
+
+
+        function fetchAPI({url, method, data}) {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url,
+                    type: method,
+                    data,
+                    success: function (res) {
+                        resolve(res);
+                    },
+                    error: function (error) {
+                        reject(error);
+                    }
+                })
+            })
+        }
+    </script>
+</head>
+
+<body class="">
+
+    <div class="navbar navbar-expand-lg navbar-light navbar-static">
+        <div class="navbar-brand text-center text-lg-left" style="padding-top: 0.6rem; padding-bottom: 0.6rem;">
+            <a href="/" class="d-inline-block">
+                <img src="/images/logo-vmg.png" class="d-none d-sm-block" alt="" style="height: 36px !important;">
+                <img src="/images/logo-vmg.png" class="d-sm-none" alt="" style="height: 36px !important;">
+            </a>
+        </div>
+        <div class="collapse navbar-collapse order-2 order-lg-1" id="navbar-mobile">
+
+        </div>
+        <ul class="navbar-nav flex-row order-1 order-lg-2 flex-1 flex-lg-0 justify-content-end align-items-center">
+            <li class="nav-item nav-item-dropdown-lg dropdown dropdown-user h-100">
+                <a href="#"
+                    class="navbar-nav-link navbar-nav-link-toggler dropdown-toggle d-inline-flex align-items-center h-100"
+                    data-toggle="dropdown">
+                    <div class="rounded-pill mr-lg-2" style="width:34;height:34;overflow:hidden">
+                        <img src="<%= (user && user.profilePhoto) ? user.profilePhoto : defaultUserPhoto %>" width="34"
+                            height="34" alt="">
+                    </div>
+                    <span class="d-none d-lg-inline-block">
+                        <%= (user && user.username) ? user.username : i18n.__('MSG_UNDEFINED_TITLE') %>
+                    </span>
+                </a>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                    <!-- <a href="<%= envClientUrl %>" class="dropdown-item"><i class="icon-user"></i>
+                        <%= i18n.__('MSG_MY_HOMEPAGE_TITLE') %>
+                    </a> -->
+                    <% if( user && user.role && user.role.isCpanel ) {%>
+                        <a href="<%= envAdminUrl%>" class="dropdown-item"><i class="icon-users4"></i>
+                            <span class="dashboard" style="margin-left: -5px">
+                                <%= i18n.__('MSG_MANAGE_USER_TITLE') %>
+                            </span>
+                        </a>
+                        <%}%>
+
+                            <!-- <div class="dropdown-divider"></div> -->
+
+                            <!-- <a href="#" class="dropdown-item"><i
+                        class="icon-headset"></i>
+                        <%= i18n.__('MSG_HELP_AND_SUPPORT_TITLE') %>
+                    </a>
+                    -->
+                            <a href="<%= envAuthUrl %>/logout" class="dropdown-item"><i class="icon-switch2"></i>
+                                <%= i18n.__('MSG_LOGOUT_TITLE') %>
+                            </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="page-content">
+
+        <div class="content-wrapper">
+
+            <div class="content-inner">
+
+                <div class="page-header">
+                </div>
+
+                <div class="content pt-0">
+                    <div class="row" style="max-width: 1400px; margin: 18px auto !important;">
+
+                        <div class="col-xl-3">
+                            <div class="card sidebar-light">
+                                <div class="card-header">
+                                    <h5 class="card-title"></h5>
+                                </div>
+                                <div class="card-body sidebar-content" style="margin: -20px !important;">
+
+                                    <div class="sidebar-section">
+                                        <div class="sidebar-section-body pt-0" style="padding-bottom: 0;">
+                                            <div class="media" style="padding: 0; margin: 0 !important;">
+                                                <div class="mr-3 main-user-avatar">
+                                                    <a>
+                                                        <img src="<%= (user && user.profilePhoto) ? user.profilePhoto : defaultUserPhoto %>"
+                                                            class="rounded-circle" width="100" height="100" alt=""
+                                                            style="cursor: pointer;" />
+                                                    </a>
+                                                </div>
+                                                <div class="media-body align-self-center">
+                                                    <h6 class="mb-0">
+                                                        <%= i18n.__('MSG_HELLO_TITLE') %>,
+                                                    </h6>
+                                                    <h6 class="mb-0">
+                                                        <%= (user && user.username) ? user.username :
+                                                            i18n.__('MSG_UNDEFINED_TITLE') %>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                            <!-- <ul class="nav nav-sidebar mb-2 mt-2">
+                                                <li class="nav-item" style="padding: 0;">
+                                                    <div href="#inbox" class="nav-link"
+                                                        style="padding-left: 0; padding-right: 0; pointer-events: none;">
+                                                        <span style="margin-top: 1px;">
+                                                            <%= i18n.__('MSG_SCORE_TITLE') %>
+                                                        </span>
+                                                        <span class="text-success font-weight-bold ml-auto"
+                                                            id="account_wallet">
+                                                            <%= (user && user.money) ? user.money.toLocaleString() : 0
+                                                                %>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            </ul> -->
+
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <!-- <a href="<%= envClientUrl + '/cd' %>"
+                                                    class="btn btn-success btn-float mx-1">
+                                                    <i class="icon-database-refresh stop-spinner"></i> <span>
+                                                        <%= i18n.__('MSG_CD_TITLE') %>
+                                                    </span>
+                                                </a> -->
+                                                <a href="<%= envClientUrl + '/payment' %>"
+                                                    class="btn btn-danger btn-float mx-1">
+                                                    <i class="icon-piggy-bank icon-1x stop-spinner"></i>
+                                                    <span>
+                                                        <%= i18n.__('MSG_RECHARGE_SCORE_TITLE') %>
+                                                    </span>
+                                                </a>
+                                                <a href="<%= envClientUrl + '/pob' %>"
+                                                    class="btn btn-indigo btn-float mx-1">
+                                                    <i class="icon-credit-card2 stop-spinner"></i> <span>
+                                                        <%= i18n.__('MSG_POB_TITLE') %>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="sidebar-section mb-3">
+                                        <div class="sidebar-section-header"></div>
+                                        <div class="collapse show" id="sidebar-navigation">
+                                            <ul class="nav nav-sidebar">
+                                                <li class="nav-item-header">
+                                                    <div class="text-uppercase font-size-xs line-height-xs">
+                                                        <%= i18n.__('MSG_CATEGORY_TITLE') %>
+                                                    </div>
+                                                </li>
+                                                <!-- <li class="nav-item">
+                                                    <a href="<%= envClientUrl + '/user-information' %>" class="nav-link <%= (act_content === 'user-information') ? 'active' : '' %>">
+                                                        <i class="icon-info22"></i>
+                                                        <%= i18n.__('MSG_USER_INFORMATION_TITLE') %>
+                                                    </a>
+                                                </li> -->
+                                                <li class="nav-item">
+                                                    <a href="<%= envClientUrl + '/transaction-history' %>"
+                                                        class="nav-link <%= (act_content === 'transaction-history') ? 'active' : '' %>">
+                                                        <i class="icon-database-time2"></i>
+                                                        <%= i18n.__('MSG_PAYMENT_HISTORY_TITLE') %>
+                                                    </a>
+                                                </li>
+                                                <!-- <li class="nav-item">
+                                                    <a href="<%= envClientUrl + '/cd-history' %>"
+                                                        class="nav-link <%= (act_content === 'cd-history') ? 'active' : '' %>">
+                                                        <i class="icon-database-time2"></i>
+                                                        <%= i18n.__('MSG_CD_HISTORY_TITLE') %>
+                                                    </a>
+                                                </li> -->
+                                                <li class="nav-item">
+                                                    <a href="<%= envClientUrl + '/pob-history' %>"
+                                                        class="nav-link <%= (act_content === 'pob-history') ? 'active' : '' %>">
+                                                        <i class="icon-database-time2"></i>
+                                                        <%= i18n.__('MSG_POB_HISTORY_TITLE') %>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="<%= envClientUrl + '/user-security' %>"
+                                                        class="nav-link <%= (act_content === 'user-security') ? 'active' : '' %>">
+                                                        <i class="icon-shield-check"></i>
+                                                        <%= i18n.__('MSG_CHANGE_USER_PASSWORD_TITLE') %>
+                                                    </a>
+                                                </li>
+                                                <!-- <li class="nav-item">
+                                                    <a href="<%= envClientUrl + '/fluctuations' %>" class="nav-link <%= (act_content === 'fluctuations') ? 'active' : '' %>">
+                                                        <i class="icon-align-bottom"></i>
+                                                        <%= i18n.__('MSG_FLUCTUATIONS_TITLE') %>
+                                                    </a>
+                                                </li> -->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-9">
+                            <%- include(content) %>
+                        </div>
+                    </div>
+                </div>
+                <div class="navbar navbar-expand-lg navbar-light border-bottom-0 border-top">
+                </div>
+
+            </div>
+
+            <div class="btn-to-top"><button type="button" class="btn btn-dark btn-icon rounded-pill"><i
+                        class="icon-arrow-up8"></i></button></div>
+        </div>
+    </div>
+</body>
+
+</html>

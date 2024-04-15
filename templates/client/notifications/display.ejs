@@ -1,0 +1,25 @@
+<li class="nav-item nav-item-dropdown-lg dropdown">
+    <a href="#" class="navbar-nav-link navbar-nav-link-toggler" data-toggle="dropdown">
+        <i class="icon-bubbles4"></i>
+        <span class="badge badge-warning badge-pill ml-auto ml-lg-0" id="totalNotification" >
+            0
+        </span>
+    </a>
+
+    <div class="dropdown-menu dropdown-menu-right dropdown-content wmin-lg-350">
+        <div class="dropdown-content-header" >
+            <span class="font-weight-semibold" id="">
+                <%= i18n.__('MSG_NOTIFICATIONS_TITLE') %>
+            </span>
+        </div>
+
+        <div class="dropdown-content-body dropdown-scrollable" id="scroll-profile">
+            <ul class="media-list" id="media-list" >
+                <li></li>
+            </ul>
+        </div>
+        <div class="dropdown-content-footer justify-content-center p-0">
+            <a href="#" class="btn btn-light btn-block border-0 rounded-top-0" data-popup="tooltip" title="" data-original-title="<%= i18n.__('MSG_LOAD_MORE_TITLE') %>"><i class="icon-menu7"></i></a>
+        </div>
+    </div>
+</li>

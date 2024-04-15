@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Error Found</title>
+    <!-- Global stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
+        type="text/css">
+    <link href="/assets/icons/icomoon/styles.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets_core/css/ltr/all.min.css" rel="stylesheet" type="text/css">
+    <!-- /global stylesheets -->
+
+    <!-- Core JS files -->
+    <script src="/assets/js/jquery/jquery.min.js"></script>
+    <script src="/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <!-- /core JS files -->
+</head>
+
+<body>
+    <!-- /main navbar -->
+    <!-- Page content -->
+    <div class="page-content">
+        <!-- Main content -->
+        <div class="content-wrapper">
+            <!-- Inner content -->
+            <div class="content-inner">
+                <!-- Content area -->
+                <div class="content d-flex justify-content-center align-items-center">
+                    <!-- Container -->
+                    <div class="flex-fill">
+                        <!-- Error title -->
+                        <div class="text-center mb-4">
+                            <img src="/assets/images/error_bg.svg" class="img-fluid mb-3" height="230" alt="">
+                            <h1 class="display-2 font-weight-semibold line-height-1 mb-2"><%= status ? status : 500 %></h1>
+                            <h5 class="w-md-25 mx-md-auto"><%= message ? message : 'Lỗi xảy ra' %></h5>
+                        </div>
+                        <!-- /error title -->
+
+
+                        <!-- Error content -->
+                        <div class="text-center">
+                            <a href="/" class="btn btn-primary"><i class="icon-home4 me-2"></i> Trở lại trang chủ</a>
+                        </div>
+                        <!-- /error wrapper -->
+                    </div>
+                    <!-- /container -->
+
+                </div>
+                <!-- /content area -->
+            </div>
+            <!-- /inner content -->
+        </div>
+        <!-- /main content -->
+    </div>
+    <!-- /page content -->
+</body>
+
+</html>

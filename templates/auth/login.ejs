@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Đăng nhập</title>
+    
+    <!-- Global stylesheets -->
+	<link href="/assets/fonts/inter/inter.css" rel="stylesheet" type="text/css">
+	<link href="/assets/icons/phosphor/styles.min.css" rel="stylesheet" type="text/css">
+	<link href="/assets_core/css/ltr/all.min.css" rel="stylesheet" type="text/css">
+	<!-- /global stylesheets -->
+
+	<!-- Core JS files -->
+	<script src="/assets/js/jquery/jquery.min.js"></script>
+	<script src="/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+	<!-- /core JS files -->
+
+	<!-- Theme JS files -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="/assets/js/vendor/notifications/noty.min.js"></script>
+	<script src="/assets_core/js/app.js"></script>
+	<script>
+		const _componentNoty = function (text, type) {
+			if (typeof Noty == 'undefined') {
+				console.warn('Warning - noty.min.js is not loaded.');
+				return;
+			}
+
+			// Override Noty defaults
+			Noty.overrideDefaults({
+				theme: 'limitless',
+				layout: 'topRight',
+				type: 'alert',
+				timeout: 2500
+			});
+
+			return new Noty({ text, type }).show();
+		};
+
+		document.addEventListener('DOMContentLoaded', function () {
+			const stateMsg = JSON.parse('<%- JSON.stringify(stateMsg) %>');
+
+			if (stateMsg) {
+				let message = (stateMsg.message) ? stateMsg.message : '';
+				let type = (typeof stateMsg.status !== 'undefined' && !stateMsg.status) ? 'error' : 'success';
+
+				// Show message error
+				if (message) _componentNoty(message, type);
+			}
+		});
+	</script>
+</head>
+
+<body>
+    <!-- Page content -->
+    <div class="page-content">
+
+        <!-- Main content -->
+        <div class="content-wrapper">
+
+            <!-- Inner content -->
+            <div class="content-inner">
+
+                <!-- Content area -->
+                <div class="content d-flex justify-content-center align-items-center">
+
+                    <!-- Login form -->
+                    <div class="card mb-0">
+                       
+                        
+                        <div class="tab-content card-body">
+                            <form action="/login" id="form-login" method="POST">
+                                <div class="mb-0">
+                                    <div class="card-body me-5">
+                                       
+                                        <div class="form-group form-group-feedback form-group-feedback-left me-5">
+                                            <input type="text" class="form-control" name="username"
+                                                placeholder="">
+                                            <div class="form-control-feedback">
+                                                <i class="icon-user text-muted"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-group-feedback form-group-feedback-left">
+                                            <input type="password" class="form-control" name="password"
+                                                placeholder="">
+                                            <div class="form-control-feedback">
+                                                <i class="icon-lock2 text-muted icon-password-unlock"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        <div class="form-group d-flex align-items-center">
+                                            <div class="col-lg-6 pl-0">
+                                                <label class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" name="remember_me" />
+                                                    <span class="custom-control-label" style="color: #2196f3;"></span>
+                                                </label>
+                                            </div>
+                                          
+                                        </div>
+
+                                        
+
+                                        <div class="form-group">
+                                            <button type="submit" id="submit-login" class="btn btn-primary btn-block"> </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            
+                        </div>
+                    </div>
+                    <!-- </form> -->
+                    <!-- /login form -->
+
+                </div>
+                <!-- /content area -->
+
+           
+            </div>
+            <!-- /inner content -->
+            
+        </div>
+        <!-- /main content -->
+
+    </div>
+    <!-- /page content -->
+</body>
+</html>
