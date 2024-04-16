@@ -1,0 +1,127 @@
+<!-- Theme JS files -->
+<script src="/assets/js/vendor/ui/fullcalendar/main.min.js"></script>
+<script src="/assets/js/vendor/visualization/echarts/echarts.min.js"></script>
+
+<script src="/assets/demo/pages/timelines.js"></script>
+<script src="/assets/demo/charts/echarts/bars/tornado_negative_stack.js"></script>
+<script src="/assets/demo/charts/pages/timelines/daily_statistics.js"></script>
+<script src="/assets/js/vendor/forms/validation/validate.min.js"></script>
+<script>
+    const FormValidation = function () {
+
+        const _componentValidation = function () {
+            if (!$().validate) {
+                console.warn('Warning - validate.min.js is not loaded.');
+                return;
+            }
+
+            $.validator.addMethod("phoneVN", function (phone_number, element) {
+                phone_number = phone_number.replace(/\s+/g, "");
+                return this.optional(element) || phone_number.length >= 10 &&
+                    phone_number.match(/^(0|\+84|\(84\))?[1-9][0-9]{8}$/);
+            }, "Số điện thoại sai định dạng!");
+
+            // Initialize
+            const validator = $('.form-validate-jquery').validate({
+                ignore: 'input[type=hidden], .select2-search__field', // ignore hidden fields
+                errorClass: 'validation-invalid-label',
+                successClass: 'validation-valid-label',
+                validClass: 'validation-valid-label',
+                highlight: function (element, errorClass) {
+                    $(element).removeClass(errorClass);
+                },
+                unhighlight: function (element, errorClass) {
+                    $(element).removeClass(errorClass);
+                },
+                success: function (label) {
+                    label.addClass('validation-valid-label').text('Hợp lệ');
+                },
+
+                // Different components require proper error label placement
+                errorPlacement: function (error, element) {
+
+                    // Input with icons and Select2
+                    if (element.hasClass('select2-hidden-accessible')) {
+                        error.appendTo(element.parent());
+                    }
+
+                    // Input group, form checks and custom controls
+                    else if (element.parents().hasClass('form-control-feedback') || element.parents().hasClass('form-check') || element.parents().hasClass('input-group')) {
+                        error.appendTo(element.parent().parent());
+                    }
+
+                    // Other elements
+                    else {
+                        error.insertAfter(element);
+                    }
+                },
+                rules: {
+                    customer_phone: {
+                        phoneVN: true
+                    }
+                },
+                messages: {
+                    customer_name: {
+                        required: 'Yêu cầu nhập thông tin họ tên'
+                    },
+                    customer_phone: {
+                        required: 'Yêu cầu số điện thoại khách hàng'
+                    },
+                    customer_rank: {
+                        required: 'Yêu cầu nhập hạng khách hàng'
+                    }
+                }
+            });
+
+            // Reset form
+            $('#reset').on('click', function () {
+                validator.resetForm();
+
+                // Clear data
+                $("input[name='customer_name']").val('');
+                $("input[name='customer_phone']").val('');
+                $("select[name='customer_rank']").val([]);
+                $("textarea[name='customer_note']").val('');
+            });
+        };
+
+        return { init: function () { _componentValidation(); } }
+    }();
+
+    document.addEventListener('DOMContentLoaded', function () {
+        FormValidation.init();
+        $("select[name='customer_rank']").val([]);
+    });
+
+</script>
+<div class="card">
+
+    <div class="card-body">
+        <form action="#" id="registerForm" class="form-validate-jquery" novalidate="novalidate">
+            <fieldset class="mb-3">
+                <legend class="fs-lg fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Ghi âm giọng nói</legend>
+
+                <div class="text-result"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Chọn khách hàng<span class="text-danger">*</span></label>
+                    <select class="form-select" name="customer_rank" required>
+                        <option value="rank_a">Hạng A</option>
+                        <option value="rank_b">Hạng B</option>
+                        <option value="rank_c">Hạng C</option>
+                        <option value="rank_d">Hạng D</option>
+                    </select>
+                </div>
+
+                
+                
+            </fieldset>
+
+            <div class="text-end">
+                <a href="javascript:void(0)" id="reset" class="btn btn-light text-uppercase fw-semibold me-2">Hủy</a>
+                <button type="submit" class="btn btn-primary fw-semibold text-uppercase">Đăng ký</button>
+            </div>
+        </form>
+    </div>
+
+</div>

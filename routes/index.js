@@ -15,6 +15,9 @@ router.get('/', (ctx) => {
 const customerRouter = require('./customer');
 router.use(customerRouter);
 
+const voiceBioRouter = require('./voicebio');
+router.use(voiceBioRouter);
+
 // router.get('/info', (ctx) => {
 //     return ctx.render('info', {});
 // });

@@ -150,7 +150,7 @@
 					<ul class="nav nav-sidebar" data-nav-type="accordion">
 
 						<li class="nav-item">
-							<a href="index.html" class="nav-link active">
+							<a href="/customer" class="nav-link <%= activeTab == 'customer' ? 'active' : '' %>">
 								<i class="ph-users-three"></i>
 								<span>
 									Thông tin khách hàng
@@ -158,19 +158,19 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="#" class="nav-link">
+							<a href="/voicebio" class="nav-link <%= activeTab == 'voicebio' ? 'active' : '' %>">
 								<i class="ph-vibrate"></i>
 								<span>Đăng ký giọng nói</span>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="#" class="nav-link">
+							<a href="/verify" class="nav-link <%= activeTab == 'verify' ? 'active' : '' %>">
 								<i class="ph-shield-check"></i>
 								<span>Xác thực SĐT</span>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="#" class="nav-link">
+							<a href="/payment" class="nav-link <%= activeTab == 'payment' ? 'active' : '' %>">
 								<i class="ph-shopping-cart"></i>
 								<span>Xác thực thanh toán</span>
 							</a>
