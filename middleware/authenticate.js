@@ -10,5 +10,6 @@ module.exports = async (ctx, next) => {
         return ctx.redirect(process.env.APP_URL + "/login");
     }
 
+    ctx.state.accessToken = accessToken;
     return next();
 }

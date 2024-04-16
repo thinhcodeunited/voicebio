@@ -8,15 +8,12 @@ const checkAuthMiddleware = require('../middleware/authenticate');
 router.use(checkAuthMiddleware);
 
 router.get('/', (ctx) => {
-    let stateMsg = ctx.flash('state.notifier');
-    const pageData = {
-        pageTitle: "Thông tin khách hàng",
-        pageContent: "customer_info.ejs",
-        stateMsg: (stateMsg.length > 0) ? stateMsg[0] : null,
-    }
-    
-    return ctx.render('client/layout', pageData);
+    // Chưa có dashboard sẽ redirect về customer
+    return ctx.redirect('/customer');
 });
+
+const customerRouter = require('./customer');
+router.use(customerRouter);
 
 // router.get('/info', (ctx) => {
 //     return ctx.render('info', {});

@@ -8,7 +8,7 @@
                 return;
             }
 
-            $.validator.addMethod("phoneVN", function(phone_number, element) {
+            $.validator.addMethod("phoneVN", function (phone_number, element) {
                 phone_number = phone_number.replace(/\s+/g, "");
                 return this.optional(element) || phone_number.length >= 10 &&
                     phone_number.match(/^(0|\+84|\(84\))?[1-9][0-9]{8}$/);
@@ -69,7 +69,7 @@
             // Reset form
             $('#reset').on('click', function () {
                 validator.resetForm();
-                
+
                 // Clear data
                 $("input[name='customer_name']").val('');
                 $("input[name='customer_phone']").val('');
@@ -90,10 +90,11 @@
 <div class="card">
 
     <div class="card-body">
-        <form action="#" class="form-validate-jquery" novalidate="novalidate">
+        <form action="#" id="registerForm" class="form-validate-jquery" novalidate="novalidate">
             <fieldset class="mb-3">
-                <legend class="fs-lg fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Thông tin đăng ký
-                </legend>
+                <legend class="fs-lg fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Thông tin đăng ký</legend>
+
+                <div class="text-result"></div>
 
                 <div class="mb-3">
                     <label class="form-label">Họ tên khách hàng<span class="text-danger">*</span></label>
@@ -127,10 +128,60 @@
             </fieldset>
 
             <div class="text-end">
-                <a href="javascript:void(0)" id="reset" class="btn btn-light text-uppercase fw-semibold me-2">Làm mới</a>
+                <a href="javascript:void(0)" id="reset" class="btn btn-light text-uppercase fw-semibold me-2">Làm
+                    mới</a>
                 <button type="submit" class="btn btn-primary fw-semibold text-uppercase">Đăng ký</button>
             </div>
         </form>
     </div>
 
 </div>
+
+<div class="card">
+
+    <div class="card-body">
+        <fieldset class="mb-3">
+            <legend class="fs-lg fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Danh sách khách hàng đăng ký</legend>
+
+            <span class="text-muted">Tính năng đang phát triển...</span>
+           
+        </fieldset>
+    </div>
+
+</div>
+<script>
+    const renderTextResult = (status, message) => {
+        const item = `<div class="alert ${status ? 'alert-success' : 'alert-danger'} alert-dismissible fade show">
+                    <i class="${status ? 'ph-check-circle' : 'ph-x-circle'} fw-bold me-2"></i>
+                    <span class="fw-base">${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>`;
+                console.log(item);
+
+        $('.text-result').empty().append(item);
+        return item;
+    }
+
+    $(document).ready(function () {
+        $("#registerForm").submit(async function (event) {
+            event.preventDefault();
+
+            const formData = $(this).serialize();
+
+            try {
+                const res = await axios.post('/customer/create', formData);
+                if (!res || !res.data) {
+                    renderTextResult(false, 'Có lỗi xảy ra trong quá trình đăng ký!');
+                    return;
+                }
+
+                const {status , message} = res.data;
+                renderTextResult(status, message);
+                return;
+            } catch (err) {
+                renderTextResult(false, 'Có lỗi xảy ra trong quá trình đăng ký!');
+                return;
+            }
+        });
+    });
+</script>
