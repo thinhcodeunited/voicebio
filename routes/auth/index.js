@@ -1,6 +1,9 @@
 const Router = require('@koa/router');
 const router = new Router();
 
+const logoutController = require('../../controllers/auth/login_form');
+router.get('/logout', logoutController);
+
 const loginFormController = require('../../controllers/auth/login_form');
 router.get('/login', loginFormController);
 
