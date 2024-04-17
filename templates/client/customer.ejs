@@ -92,7 +92,8 @@
     <div class="card-body">
         <form action="#" id="registerForm" class="form-validate-jquery" novalidate="novalidate">
             <fieldset class="mb-3">
-                <legend class="fs-lg fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Thông tin đăng ký</legend>
+                <legend class="fs-lg fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Thông tin đăng ký
+                </legend>
 
                 <div class="text-result"></div>
 
@@ -141,25 +142,40 @@
 
     <div class="card-body">
         <fieldset class="mb-3">
-            <legend class="fs-lg fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Danh sách khách hàng đăng ký</legend>
+            <legend class="fs-lg fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Danh sách khách hàng đăng
+                ký</legend>
 
             <span class="text-muted">Tính năng đang phát triển...</span>
-           
+
         </fieldset>
     </div>
 
 </div>
 <script>
-    const renderTextResult = (status, message) => {
+    const renderTextResult = (status, message, data) => {
+        const { phone, isEnrolled } = data;
+        if (status) {
+            message = `Đăng ký thành công. Bạn có thể tiếp tục đăng ký giọng nói <a href="/voicebio?user_code=${phone}" >ở đây</a>`
+        } else {
+            if (isEnrolled) {
+                message = `Đã đăng ký thông tin và giọng nói trên hệ thống. Vào <a href="javascipt:void(0)" action="resetVoice(this)">đây</a> để đăng ký lại giọng nói`
+            } else {
+                message = `Bạn đã đăng ký trước đó và chưa đăng ký giọng nói. Bạn có muốn đăng ký giọng nói không? Vào <a href="/voicebio?user_code=${phone}" >đây</a> tiếp tục`
+            }
+        }
+
         const item = `<div class="alert ${status ? 'alert-success' : 'alert-danger'} alert-dismissible fade show">
                     <i class="${status ? 'ph-check-circle' : 'ph-x-circle'} fw-bold me-2"></i>
                     <span class="fw-base">${message}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>`;
-                console.log(item);
 
         $('.text-result').empty().append(item);
         return item;
+    }
+
+    const resetVoice = () => {
+        console.log(123);
     }
 
     $(document).ready(function () {
@@ -170,13 +186,11 @@
 
             try {
                 const res = await axios.post('/customer/create', formData);
-                if (!res || !res.data) {
-                    renderTextResult(false, 'Có lỗi xảy ra trong quá trình đăng ký!');
-                    return;
-                }
+                if (!res || !res.data) throw new Error("Lỗi ngoại lệ");
 
-                const {status , message} = res.data;
-                renderTextResult(status, message);
+                const { status, message, data } = res.data;
+
+                renderTextResult(status, message, data);
                 return;
             } catch (err) {
                 renderTextResult(false, 'Có lỗi xảy ra trong quá trình đăng ký!');

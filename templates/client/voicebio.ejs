@@ -1,5 +1,11 @@
-<script src="/assets/js/vendor/uploaders/fileinput/fileinput.min.js"></script>
-<script src="/assets/js/vendor/uploaders/fileinput/plugins/sortable.min.js"></script>
+<script>
+    $('#file-upload').change(function () {
+        var i = $(this).prev('label').clone();
+        var file = $('#file-upload')[0].files[0].name;
+        $(this).prev('label').text(file);
+    });
+
+</script>
 <script src="/assets/js/vendor/forms/validation/validate.min.js"></script>
 <script>
     const FormValidation = function () {
@@ -95,54 +101,53 @@
     <div class="card-body">
         <form action="#" id="registerForm" class="form-validate-jquery" novalidate="novalidate">
             <fieldset class="mb-3">
-                <legend class="fs-lg fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Ghi âm giọng nói</legend>
+                <legend class="fs-lg fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Ghi âm giọng nói
+                </legend>
 
                 <div class="text-result"></div>
 
                 <div class="mb-3">
-                    <label class="form-label">Chọn khách hàng<span class="text-danger">*</span></label>
-                    <select class="form-select" name="customer_rank" required>
-                        <option value="rank_a">Hạng A</option>
-                        <option value="rank_b">Hạng B</option>
-                        <option value="rank_c">Hạng C</option>
-                        <option value="rank_d">Hạng D</option>
-                    </select>
+                    <label class="form-label">Khách hàng<span class="text-danger">*</span></label>
+                    <input type="hidden" name="phone" value="<%= (userData && userData.phone) ? userData.phone : '' %>" />
+                    <input type="text" class="form-control" name="customer_name" placeholder="Nhập họ tên khách hàng" value="<%= (userData && userData.name) ? userData.name : '' %>" readonly>
                 </div>
 
-                
-                
             </fieldset>
 
-                <!-- Timeline -->
-					<div class="timeline timeline-center">
-						<div class="timeline-container">
+            <!-- Timeline -->
+            <div class="timeline timeline-center">
+                <div class="timeline-container">
 
-                            <div class="timeline-row timeline-row-start mb-4">
-                             
-								<div class="timeline-time" style="background-color: unset;">
-									<div class="d-flex align-items-center record_warp_1">
-                                        <a href="javascript:void(0)" id="record_btn_1"
-                                            class="badge bg-secondary rounded-pill p-1 me-3"
-                                            data-index="1" onclick="recordAction(this)">
-                                            <i class="ph-microphone ph-2x"></i>
-                                        </a>
+                    <div class="timeline-row timeline-row-start mb-4">
 
-                                        <input type="button" value="Upload file ghi âm">
+                        <div class="timeline-time" style="background-color: unset;">
+                            <div class="d-flex align-items-center record_warp_1">
+                                <a href="javascript:void(0)" id="record_btn_1"
+                                    class="badge bg-secondary rounded-pill p-1 me-3" data-index="1"
+                                    onclick="recordAction(this)">
+                                    <i class="ph-microphone ph-2x"></i>
+                                </a>
 
-                                        <audio id="audio_player_1" controls></audio>
-                                    </div>
-								</div>
-                                
+                                <div>
+                                    <label for="file-upload" class="btn btn-primary">
+                                        <i class="ph-upload-simple me-3"></i> Upload file ghi âm 1
+                                    </label>
+                                    <input id="file-upload" name='upload_cont_img' type="file" style="display:none;">
+                                </div>
 
-								<div class="text-end" style="padding-top: 14px;"> 
-									<h5 class="card-title mb-1">Ghi âm câu 1</h5>
-									<p class="text-muted">Mã xác thực của bạn là 123123</p>
-								</div>
-							</div>
+                                <audio id="audio_player_1" controls></audio>
+                            </div>
+                        </div>
 
-						</div>
-				    </div>
-				    <!-- /timeline -->
+                        <div class="text-end" style="padding-top: 14px;">
+                            <h5 class="card-title mb-1">Ghi âm câu 1</h5>
+                            <p class="">"Mã xác thực của bạn là 123123"</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- /timeline -->
 
             <div class="text-end">
                 <a href="javascript:void(0)" id="reset" class="btn btn-light text-uppercase fw-semibold me-2">Hủy</a>
