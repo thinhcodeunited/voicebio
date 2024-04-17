@@ -18,6 +18,9 @@ router.use(customerRouter);
 const voiceBioRouter = require('./voicebio');
 router.use(voiceBioRouter);
 
+const verifyRouter = require('./verify');
+router.use(verifyRouter);
+
 // router.get('/info', (ctx) => {
 //     return ctx.render('info', {});
 // });

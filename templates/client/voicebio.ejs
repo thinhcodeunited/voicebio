@@ -1,10 +1,5 @@
-<!-- Theme JS files -->
-<script src="/assets/js/vendor/ui/fullcalendar/main.min.js"></script>
-<script src="/assets/js/vendor/visualization/echarts/echarts.min.js"></script>
-
-<script src="/assets/demo/pages/timelines.js"></script>
-<script src="/assets/demo/charts/echarts/bars/tornado_negative_stack.js"></script>
-<script src="/assets/demo/charts/pages/timelines/daily_statistics.js"></script>
+<script src="/assets/js/vendor/uploaders/fileinput/fileinput.min.js"></script>
+<script src="/assets/js/vendor/uploaders/fileinput/plugins/sortable.min.js"></script>
 <script src="/assets/js/vendor/forms/validation/validate.min.js"></script>
 <script>
     const FormValidation = function () {
@@ -94,6 +89,7 @@
     });
 
 </script>
+
 <div class="card">
 
     <div class="card-body">
@@ -116,6 +112,37 @@
                 
                 
             </fieldset>
+
+                <!-- Timeline -->
+					<div class="timeline timeline-center">
+						<div class="timeline-container">
+
+                            <div class="timeline-row timeline-row-start mb-4">
+                             
+								<div class="timeline-time" style="background-color: unset;">
+									<div class="d-flex align-items-center record_warp_1">
+                                        <a href="javascript:void(0)" id="record_btn_1"
+                                            class="badge bg-secondary rounded-pill p-1 me-3"
+                                            data-index="1" onclick="recordAction(this)">
+                                            <i class="ph-microphone ph-2x"></i>
+                                        </a>
+
+                                        <input type="button" value="Upload file ghi âm">
+
+                                        <audio id="audio_player_1" controls></audio>
+                                    </div>
+								</div>
+                                
+
+								<div class="text-end" style="padding-top: 14px;"> 
+									<h5 class="card-title mb-1">Ghi âm câu 1</h5>
+									<p class="text-muted">Mã xác thực của bạn là 123123</p>
+								</div>
+							</div>
+
+						</div>
+				    </div>
+				    <!-- /timeline -->
 
             <div class="text-end">
                 <a href="javascript:void(0)" id="reset" class="btn btn-light text-uppercase fw-semibold me-2">Hủy</a>
