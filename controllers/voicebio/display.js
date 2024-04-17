@@ -1,9 +1,12 @@
 const redisHelper = require('../../helper/redis');
+const textCheck = require('../../config/text_check');
+const { randomString } = require('../../helper/data_type');
 
 module.exports = async (ctx) => {
-    const {user_code} = ctx.request.query;
+    const { user_code } = ctx.request.query;
 
     const getUserInfo = await redisHelper.getSingleRedis(`${user_code}_data_customer`);
+    const listText = textCheck.map(e => e.replace('$i', randomString(6, "0123456789")));
 
     let stateMsg = ctx.flash('state.notifier');
     const pageData = {
@@ -11,7 +14,8 @@ module.exports = async (ctx) => {
         pageContent: "voicebio.ejs",
         activeTab: 'voicebio',
         stateMsg: (stateMsg.length > 0) ? stateMsg[0] : null,
-        userData: getUserInfo ? JSON.parse(getUserInfo) : null
+        userData: getUserInfo ? JSON.parse(getUserInfo) : null,
+        listText
     }
 
     return ctx.render('client/layout', pageData);

@@ -118,6 +118,7 @@
             <div class="timeline timeline-center">
                 <div class="timeline-container">
 
+                    <% listText.forEach((text, index) => { %>
                     <div class="timeline-row timeline-row-start mb-4">
 
                         <div class="timeline-time" style="background-color: unset;">
@@ -130,7 +131,7 @@
 
                                 <div>
                                     <label for="file-upload" class="btn btn-primary">
-                                        <i class="ph-upload-simple me-3"></i> Upload file ghi âm 1
+                                        <i class="ph-upload-simple me-3"></i> Upload file ghi âm <%= (index + 1) %>
                                     </label>
                                     <input id="file-upload" name='upload_cont_img' type="file" style="display:none;">
                                 </div>
@@ -140,11 +141,11 @@
                         </div>
 
                         <div class="text-end" style="padding-top: 14px;">
-                            <h5 class="card-title mb-1">Ghi âm câu 1</h5>
-                            <p class="">"Mã xác thực của bạn là 123123"</p>
+                            <h5 class="card-title mb-1">Ghi âm câu <%= (index + 1) %></h5>
+                            <p class="">"<%= text %>"</p>
                         </div>
                     </div>
-
+                    <% }) %>
                 </div>
             </div>
             <!-- /timeline -->

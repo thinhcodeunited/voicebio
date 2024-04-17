@@ -1,0 +1,3 @@
+module.exports = [
+    "Mã số xác thực của tôi là $i"
+]
