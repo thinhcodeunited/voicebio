@@ -1,3 +1,5 @@
 module.exports = [
-    "Mã số xác thực của tôi là $i"
+    "Mã số xác thực của tôi là $i",
+    "$i là mã xác thực của tôi",
+    "Mã số $i là mã xác thực"
 ]
