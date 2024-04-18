@@ -28,14 +28,15 @@
                 <div class="timeline-container">
 
                     <% for(let i=1; i<=listText.length; i++ ) { %>
-                        <div class="timeline-row timeline-row-start mb-4">
+                        <div class="timeline-row timeline-row-start mb-5">
 
                             <div class="timeline-time" style="background-color: unset;">
                                 <div class="d-flex align-items-center">
                                     <div id="record_area_<%= i %>">
                                         <div class="d-flex align-items-center">
-                                            <a href="javascript:void(0)" class="badge bg-secondary rounded-pill p-1 me-3"
-                                                data-index="<%= i %>" onclick="recordAction(this)">
+                                            <a href="javascript:void(0)"
+                                                class="badge bg-secondary rounded-pill p-1 me-3" data-index="<%= i %>"
+                                                onclick="recordAction(this)">
                                                 <i class="ph-microphone ph-2x"></i>
                                             </a>
 
@@ -43,7 +44,8 @@
                                                 <label for="file-upload" class="btn btn-primary">
                                                     <i class="ph-upload-simple me-3"></i> Upload file ghi âm <%= i %>
                                                 </label>
-                                                <input id="file-upload" name='upload_cont_img' type="file" style="display:none;">
+                                                <input id="file-upload" name='upload_cont_img' accept="audio/wav" data-index="<%= i %>"
+                                                    type="file" style="display:none;">
                                             </div>
                                         </div>
                                     </div>
@@ -76,8 +78,8 @@
             </div>
             <!-- /timeline -->
 
-            <div class="text-end mt-5">
-                <a href="javascript:void(0)" id="reset" class="btn btn-light text-uppercase fw-semibold me-2">Hủy</a>
+            <div class="text-end mt-4">
+                <a href="/voicebio" class="btn btn-light text-uppercase fw-semibold me-2">Hủy</a>
                 <a href="javascript:void(0)" class="btn btn-primary fw-semibold text-uppercase"
                     onclick="registerAction(this)">Đăng ký</a>
             </div>
@@ -216,4 +218,28 @@
             return;
         }
     }
+
+    $('#file-upload').change(function (event) {
+        const index = $(this).data('index');
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            const audioBlob = new Blob([event.target.result], { type: file.type });
+            const audioURL = URL.createObjectURL(audioBlob);
+            $(`#audio_player_${index}`).attr('src', audioURL);
+
+            const formData = new FormData();
+            const user_code = $("input[name='customer_phone']").val();
+            formData.append('file', audioBlob);
+            formData.append('user_code', user_code);
+            formData.append('text', $(`input[name='text_input_${index}']`).val());
+
+            return sendRecordingToCheck(formData, index);
+
+        };
+        reader.readAsArrayBuffer(file);
+    });
+
 </script>
