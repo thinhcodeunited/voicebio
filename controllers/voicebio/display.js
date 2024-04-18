@@ -6,7 +6,8 @@ module.exports = async (ctx) => {
     const { user_code } = ctx.request.query;
 
     const getUserInfo = await redisHelper.getSingleRedis(`${user_code}_data_customer`);
-    const listText = textCheck.map(e => e.replace('$i', randomString(6, "0123456789")));
+    let listText = textCheck.sort(() => Math.random() - 0.5);
+    listText = listText.map(e => e.replace('$i', randomString(6, "0123456789")));
 
     let stateMsg = ctx.flash('state.notifier');
     const pageData = {
