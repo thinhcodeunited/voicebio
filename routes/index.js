@@ -25,9 +25,9 @@ router.use(verifyRouter);
 //     return ctx.render('info', {});
 // });
 
-// router.get('/payment', (ctx) => {
-//     return ctx.render('payment', {});
-// });
+router.get('/payment', (ctx) => {
+    return ctx.render('payment', {});
+});
 
 // const registerRouter = require('./register');
 // router.use('/api/register', registerRouter);
@@ -35,7 +35,7 @@ router.use(verifyRouter);
 // const infoRouter = require('./info');
 // router.use('/api/info', infoRouter);
 
-// const paymentRouter = require('./payment');
-// router.use('/api/payment', paymentRouter);
+const paymentRouter = require('./payment');
+router.use('/api/payment', paymentRouter);
 
 module.exports = router.routes();

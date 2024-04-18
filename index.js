@@ -2,12 +2,16 @@ require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 require('./bin/connect');
 const Koa = require('koa');
 const app = new Koa();
+const cors = require('@koa/cors');
 const { userAgent } = require('koa-useragent');
 const bodyParser = require('koa-bodyparser');
 const render = require('koa-ejs');
 const serve = require('koa-static');
 const path = require('path');
 const flash = require('koa-better-flash');
+
+// Enable CORS middleware
+app.use(cors());
 
 app.use(userAgent);
 app.use(bodyParser());

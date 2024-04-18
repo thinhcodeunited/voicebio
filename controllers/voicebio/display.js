@@ -4,6 +4,7 @@ const { randomString } = require('../../helper/data_type');
 
 module.exports = async (ctx) => {
     const { user_code } = ctx.request.query;
+    const accessToken = ctx.state.accessToken;
 
     const getUserInfo = await redisHelper.getSingleRedis(`${user_code}_data_customer`);
     let listText = textCheck.sort(() => Math.random() - 0.5);
@@ -16,8 +17,10 @@ module.exports = async (ctx) => {
         activeTab: 'voicebio',
         stateMsg: (stateMsg.length > 0) ? stateMsg[0] : null,
         userData: getUserInfo ? JSON.parse(getUserInfo) : null,
-        listText
+        listText,
+        accessToken,
+        API_URL2: process.env.API_URL2
     }
-
+    console.log(pageData);
     return ctx.render('client/layout', pageData);
 }
