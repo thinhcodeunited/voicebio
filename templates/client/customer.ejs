@@ -1,5 +1,9 @@
 <script src="/assets/js/vendor/forms/validation/validate.min.js"></script>
 <script>
+    const accessToken = JSON.parse('<%- JSON.stringify(accessToken) %>');
+    const API_URL = JSON.parse('<%- JSON.stringify(API_URL) %>');
+</script>
+<script>
     const FormValidation = function () {
 
         const _componentValidation = function () {
@@ -158,7 +162,7 @@
             message = `Đăng ký thành công. Bạn có thể tiếp tục đăng ký giọng nói <a href="/voicebio?user_code=${phone}" >ở đây</a>`
         } else {
             if (isEnrolled) {
-                message = `Đã đăng ký thông tin và giọng nói trên hệ thống. Vào <a href="javascipt:void(0)" action="resetVoice(this)">đây</a> để đăng ký lại giọng nói`
+                message = `Đã đăng ký thông tin và giọng nói trên hệ thống. Vào <a href="javascript:void(0)" id="reset-voice">đây</a> để đăng ký lại giọng nói`
             } else {
                 message = `Bạn đã đăng ký trước đó và chưa đăng ký giọng nói. Bạn có muốn đăng ký giọng nói không? Vào <a href="/voicebio?user_code=${phone}" >đây</a> tiếp tục`
             }
@@ -174,9 +178,6 @@
         return item;
     }
 
-    const resetVoice = () => {
-        console.log(123);
-    }
 
     $(document).ready(function () {
         $("#registerForm").submit(async function (event) {
@@ -194,6 +195,28 @@
                 return;
             } catch (err) {
                 renderTextResult(false, 'Có lỗi xảy ra trong quá trình đăng ký!');
+                return;
+            }
+        });
+
+
+        $('body').on('click', 'a#reset-voice', async function () {
+            try {
+                const user_code = $("input[name='customer_phone']").val();
+                const headers = {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `Bearer ${accessToken}`,
+                };
+
+                const res = await axios.post(API_URL + '/api/voicebio/enroll/reset', { user_code }, { headers });
+                if (!res || !res.data) throw new Error('Lỗi ngoại lệ');
+                const { status, msg } = res.data;
+                if (status != 0) throw new Error('Lỗi ngoại lệ');
+
+                window.location.href = "/voicebio?user_code=" + user_code;
+                return;
+            } catch (err) {
+                _componentNoty("Có lỗi xảy ra khi xoá voice trước đó", "error");
                 return;
             }
         });

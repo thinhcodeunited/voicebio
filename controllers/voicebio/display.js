@@ -19,8 +19,8 @@ module.exports = async (ctx) => {
         userData: getUserInfo ? JSON.parse(getUserInfo) : null,
         listText,
         accessToken,
+        API_URL: process.env.API_URL,
         API_URL2: process.env.API_URL2
     }
-    console.log(pageData);
     return ctx.render('client/layout', pageData);
 }

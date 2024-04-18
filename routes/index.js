@@ -15,27 +15,13 @@ router.get('/', (ctx) => {
 const customerRouter = require('./customer');
 router.use(customerRouter);
 
-const voiceBioRouter = require('./voicebio');
-router.use(voiceBioRouter);
+const displayController = require('../controllers/voicebio/display');
+router.get('/voicebio', displayController);
 
-const verifyRouter = require('./verify');
-router.use(verifyRouter);
+const displayVerifyController = require('../controllers/verify/display');
+router.get('/verify', displayVerifyController);
 
-// router.get('/info', (ctx) => {
-//     return ctx.render('info', {});
-// });
-
-router.get('/payment', (ctx) => {
-    return ctx.render('payment', {});
-});
-
-// const registerRouter = require('./register');
-// router.use('/api/register', registerRouter);
-
-// const infoRouter = require('./info');
-// router.use('/api/info', infoRouter);
-
-const paymentRouter = require('./payment');
-router.use('/api/payment', paymentRouter);
+const displayPaymentController = require('../controllers/payment/display');
+router.get('/payment', displayPaymentController);
 
 module.exports = router.routes();

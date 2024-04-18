@@ -1,113 +1,17 @@
 <script>
-    $('#file-upload').change(function () {
-        var i = $(this).prev('label').clone();
-        var file = $('#file-upload')[0].files[0].name;
-        $(this).prev('label').text(file);
-    });
-
-</script>
-<script src="/assets/js/vendor/forms/validation/validate.min.js"></script>
-<script>
     const accessToken = JSON.parse('<%- JSON.stringify(accessToken) %>');
+    const API_URL = JSON.parse('<%- JSON.stringify(API_URL) %>');
     const API_URL2 = JSON.parse('<%- JSON.stringify(API_URL2) %>');
-
-    const FormValidation = function () {
-
-        const _componentValidation = function () {
-            if (!$().validate) {
-                console.warn('Warning - validate.min.js is not loaded.');
-                return;
-            }
-
-            $.validator.addMethod("phoneVN", function (phone_number, element) {
-                phone_number = phone_number.replace(/\s+/g, "");
-                return this.optional(element) || phone_number.length >= 10 &&
-                    phone_number.match(/^(0|\+84|\(84\))?[1-9][0-9]{8}$/);
-            }, "Số điện thoại sai định dạng!");
-
-            // Initialize
-            const validator = $('.form-validate-jquery').validate({
-                ignore: 'input[type=hidden], .select2-search__field', // ignore hidden fields
-                errorClass: 'validation-invalid-label',
-                successClass: 'validation-valid-label',
-                validClass: 'validation-valid-label',
-                highlight: function (element, errorClass) {
-                    $(element).removeClass(errorClass);
-                },
-                unhighlight: function (element, errorClass) {
-                    $(element).removeClass(errorClass);
-                },
-                success: function (label) {
-                    label.addClass('validation-valid-label').text('Hợp lệ');
-                },
-
-                // Different components require proper error label placement
-                errorPlacement: function (error, element) {
-
-                    // Input with icons and Select2
-                    if (element.hasClass('select2-hidden-accessible')) {
-                        error.appendTo(element.parent());
-                    }
-
-                    // Input group, form checks and custom controls
-                    else if (element.parents().hasClass('form-control-feedback') || element.parents().hasClass('form-check') || element.parents().hasClass('input-group')) {
-                        error.appendTo(element.parent().parent());
-                    }
-
-                    // Other elements
-                    else {
-                        error.insertAfter(element);
-                    }
-                },
-                rules: {
-                    customer_phone: {
-                        phoneVN: true
-                    }
-                },
-                messages: {
-                    customer_name: {
-                        required: 'Yêu cầu nhập thông tin họ tên'
-                    },
-                    customer_phone: {
-                        required: 'Yêu cầu số điện thoại khách hàng'
-                    },
-                    customer_rank: {
-                        required: 'Yêu cầu nhập hạng khách hàng'
-                    }
-                }
-            });
-
-            // Reset form
-            $('#reset').on('click', function () {
-                validator.resetForm();
-
-                // Clear data
-                $("input[name='customer_name']").val('');
-                $("input[name='customer_phone']").val('');
-                $("select[name='customer_rank']").val([]);
-                $("textarea[name='customer_note']").val('');
-            });
-        };
-
-        return { init: function () { _componentValidation(); } }
-    }();
-
-    document.addEventListener('DOMContentLoaded', function () {
-        FormValidation.init();
-        $("select[name='customer_rank']").val([]);
-    });
-
+    const listText = JSON.parse('<%- JSON.stringify(listText) %>');
 </script>
 
 <div class="card">
 
     <div class="card-body">
-        <form action="#" id="registerForm" class="form-validate-jquery" novalidate="novalidate">
+        <form action="#" id="registerForm">
             <fieldset class="mb-3">
                 <legend class="fs-lg fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Ghi âm giọng nói
                 </legend>
-
-                <div class="text-result"></div>
 
                 <div class="mb-3">
                     <label class="form-label">Khách hàng<span class="text-danger">*</span></label>
@@ -128,20 +32,33 @@
 
                             <div class="timeline-time" style="background-color: unset;">
                                 <div class="d-flex align-items-center">
-                                    <a href="javascript:void(0)" id="record_btn_<%= i %>"
-                                        class="badge bg-secondary rounded-pill p-1 me-3" data-index="<%= i %>"
-                                        onclick="recordAction(this)">
-                                        <i class="ph-microphone ph-2x"></i>
-                                    </a>
+                                    <div id="record_area_<%= i %>">
+                                        <a href="javascript:void(0)" class="badge bg-secondary rounded-pill p-1 me-3"
+                                            data-index="<%= i %>" onclick="recordAction(this)">
+                                            <i class="ph-microphone ph-2x"></i>
+                                        </a>
 
-                                    <!-- <div>
-                                    <label for="file-upload" class="btn btn-primary">
-                                        <i class="ph-upload-simple me-3"></i> Upload file ghi âm <%= i %>
-                                    </label>
-                                    <input id="file-upload" name='upload_cont_img' type="file" style="display:none;">
-                                </div> -->
+                                        <!-- <div>
+                                        <label for="file-upload" class="btn btn-primary">
+                                            <i class="ph-upload-simple me-3"></i> Upload file ghi âm <%= i %>
+                                        </label>
+                                            <input id="file-upload" name='upload_cont_img' type="file" style="display:none;">
+                                        </div> -->
+                                    </div>
 
-                                    <audio id="audio_player_<%= i %>" controls></audio>
+
+                                    <div id="audio_area_<%= i %>" class="w-100">
+                                        <input type="hidden" name="audio_result_<%= i %>" />
+                                        <div class="d-flex align-items-center mb-1">
+                                            <audio id="audio_player_<%= i %>" controls></audio>
+                                            <i
+                                                class="ph-check-circle result_icon text-success rounded-pill p-0 mx-2"></i>
+                                            <a href="javascript:void(0)" class="mx-5 text-under"
+                                                onclick="retryAction('<%= i %>')"><u>Ghi lại</u></a>
+                                        </div>
+                                        <span class="result_text text-success"></span>
+                                    </div>
+
                                 </div>
                             </div>
 
@@ -159,7 +76,8 @@
 
             <div class="text-end mt-5">
                 <a href="javascript:void(0)" id="reset" class="btn btn-light text-uppercase fw-semibold me-2">Hủy</a>
-                <button type="submit" class="btn btn-primary fw-semibold text-uppercase">Đăng ký</button>
+                <a href="javascript:void(0)" class="btn btn-primary fw-semibold text-uppercase"
+                    onclick="registerAction(this)">Đăng ký</a>
             </div>
         </form>
     </div>
@@ -167,38 +85,42 @@
 </div>
 
 <script>
-    async function afterRecording(formData, index) {
+    async function sendRecordingToCheck(formData, index) {
         const headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': `Bearer ${accessToken}`,
         };
-        const res = await axios.post(API_URL2 + '/api/voicebio/enroll/add_file', formData, { headers });
-        console.log(res); return;
-        if (!res || !res.data || !res.data.message) {
-            _componentNoty("Lỗi không xác định", "error");
-            return;
-        }
-        const { status, message, nextIndex, nextText, fileName } = res.data;
-        if (status) {
-            // Verify thành công, tiếp tục
-            $(`#verify_icon_${index}`).removeClass('ph-x-circle text-danger').addClass('ph-check-circle text-success');
-            $(`#record_btn_${index}`).remove();
+        try {
+            const res = await axios.post(API_URL2 + '/api/voicebio/enroll/add_file', formData, { headers });
+            if (!res || !res.data) throw new Error('Lỗi ngoại lệ');
+            const { status, is_valid } = res.data;
+            if (status != 0) throw new Error('Lỗi ngoại lệ');
 
-            // Lưu giữ liệu
-            if (nextText) $(`input[data-item='text_${nextIndex}']`).val(nextText);
-            if (fileName) $(`input[name="customer_filename_${index}"]`).val(fileName);
-        } else {
-            $(`#verify_icon_${index}`).removeClass('ph-check-circle text-success').addClass('ph-x-circle text-danger');
+            return res.data;
+        } catch (err) {
+            return {
+                "status": 0,
+                "is_valid": false
+            }
         }
+    }
 
-        _componentNoty(message, (status ? 'success' : 'error'));
-        return;
+    function retryAction(index) {
+        const recordArea = $(`#record_area_${index}`);
+        const audioArea = $(`#audio_area_${index}`);
+        const audioResult = $(`input[name="audio_result_${index}"]`);
+
+        audioResult.val(0)
+        recordArea.show();
+        audioArea.hide();
     }
 
     const mediaRecorder = [];
 
     function startRecording(index) {
-        const audioPlayer = $("audio").filter(`[data-item='audio_player_${index}']`);
+        const recordArea = $(`#record_area_${index}`);
+        const audioArea = $(`#audio_area_${index}`);
+        const audioResult = $(`input[name="audio_result_${index}"]`);
 
         const chunks = [];
         navigator.mediaDevices.getUserMedia({ audio: true })
@@ -219,7 +141,22 @@
                     formData.append('user_code', user_code);
                     formData.append('text', $(`input[name='text_input_${index}']`).val());
 
-                    return afterRecording(formData, index);
+                    const { is_valid } = await sendRecordingToCheck(formData, index);
+
+                    // Đẩy kết quả check audio
+                    if (is_valid) {
+                        audioResult.val(1);
+                        audioArea.find('.result_text').removeClass('text-danger').addClass('text-success').html('Ghi âm trùng khớp!');
+                        audioArea.find('.result_icon').removeClass('text-danger').addClass('text-success ph-check-circle');
+                    } else {
+                        audioResult.val(0);
+                        audioArea.find('.result_text').removeClass('text-success').addClass('text-danger').html('Ghi âm không trùng khớp!');
+                        audioArea.find('.result_icon').removeClass('text-success').addClass('text-danger ph-warning-circle');
+                    }
+
+                    recordArea.hide();
+                    audioArea.show();
+                    return;
                 }
 
                 mediaRecorder[index].start();
@@ -253,73 +190,30 @@
     }
 
     const registerAction = async (ele) => {
-        const customer_name = $(`input[name="customer_name"]`);
-        const customer_phone = $(`input[name="customer_phone"]`);
-        const customer_rank = $(`input[name="customer_rank"]`);
-        const customer_note = $(`textarea[name="customer_note"]`);
-        const customer_filename_1 = $(`input[name="customer_filename_1"]`);
-        const customer_filename_2 = $(`input[name="customer_filename_2"]`);
-        const customer_filename_3 = $(`input[name="customer_filename_3"]`);
-
-        if (customer_name.val() == '') {
-            _componentNoty("Vui lòng nhập tên khách hàng", "error");
-            customer_name.focus();
-            return;
+        for (let i = 1; i <= listText.length; i++) {
+            if ($(`input[name="audio_result_${i}"`).val() != 1) {
+                _componentNoty("Yêu cầu xác thực đầy đủ thông tin ghi âm trước khi đăng ký", "error");
+                return;
+            }
         }
 
-        if (customer_phone.val() == '') {
-            _componentNoty("Vui lòng nhập số điện thoại khách hàng", "error");
-            customer_phone.focus();
+        try {
+            const user_code = $("input[name='customer_phone']").val();
+            const headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${accessToken}`,
+            };
+
+            const res = await axios.post(API_URL + '/api/voicebio/enroll/do_enroll', { user_code }, { headers });
+            if (!res || !res.data) throw new Error('Lỗi ngoại lệ');
+            const { status, msg } = res.data;
+            if (status != 0) throw new Error('Lỗi ngoại lệ');
+
+            _componentNoty(msg, "success");
+            return;
+        } catch (err) {
+            _componentNoty("Có lỗi xảy ra khi đăng ký", "error");
             return;
         }
-
-        if (customer_rank.val() == '') {
-            _componentNoty("Vui lòng nhập hạng khách hàng", "error");
-            customer_rank.focus();
-            return;
-        }
-
-        if (customer_note.val() == '') {
-            _componentNoty("Vui lòng nhập ghi chú", "error");
-            customer_note.focus();
-            return;
-        }
-
-        if (customer_filename_1.val() == '' ||
-            customer_filename_2.val() == '' ||
-            customer_filename_3.val() == '') {
-            _componentNoty("Vui lòng xác thực tất cả các thông tin đăng ký", "error");
-            return;
-        }
-
-
-        const res = await axios.post('/api/register', {
-            customer_name: customer_name.val(),
-            customer_phone: customer_phone.val(),
-            customer_rank: customer_rank.val(),
-            customer_note: customer_note.val(),
-            customer_filename_1: customer_filename_1.val(),
-            customer_filename_2: customer_filename_2.val(),
-            customer_filename_3: customer_filename_3.val()
-        });
-
-        if (!res || !res.data) {
-            _componentNoty("Lỗi không xác định", "error");
-            return;
-        }
-        const { status, message } = res.data;
-
-        if (typeof status == "undefined" || !message) {
-            _componentNoty("Lỗi không xác định", "error");
-            return;
-        }
-
-        if (!status) _componentNoty(message, "error");
-
-        _componentNoty("Đăng ký thành công, trang sẽ tự động làm mới sau 2s", "success");
-        setTimeout(function () {
-            window.location.reload();
-        }, 2000);
-        return;
     }
 </script>

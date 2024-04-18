@@ -37,7 +37,7 @@ module.exports = async (ctx) => {
         ctx.session.accessToken = token;
 
         // That's ok , let go to profile
-        ctx.flash('state.notifier', { status: true, message: "Đăng nhập thành công" });
+        ctx.flash('state.notifier', { status: true, message: "Chào mừng bạn đến với Voice Biometrics" });
         return ctx.redirect(process.env.APP_URL);
     } catch (err) {
         console.log(err)
