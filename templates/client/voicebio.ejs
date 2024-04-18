@@ -33,21 +33,23 @@
                             <div class="timeline-time" style="background-color: unset;">
                                 <div class="d-flex align-items-center">
                                     <div id="record_area_<%= i %>">
-                                        <a href="javascript:void(0)" class="badge bg-secondary rounded-pill p-1 me-3"
-                                            data-index="<%= i %>" onclick="recordAction(this)">
-                                            <i class="ph-microphone ph-2x"></i>
-                                        </a>
+                                        <div class="d-flex align-items-center">
+                                            <a href="javascript:void(0)" class="badge bg-secondary rounded-pill p-1 me-3"
+                                                data-index="<%= i %>" onclick="recordAction(this)">
+                                                <i class="ph-microphone ph-2x"></i>
+                                            </a>
 
-                                        <!-- <div>
-                                        <label for="file-upload" class="btn btn-primary">
-                                            <i class="ph-upload-simple me-3"></i> Upload file ghi âm <%= i %>
-                                        </label>
-                                            <input id="file-upload" name='upload_cont_img' type="file" style="display:none;">
-                                        </div> -->
+                                            <div>
+                                                <label for="file-upload" class="btn btn-primary">
+                                                    <i class="ph-upload-simple me-3"></i> Upload file ghi âm <%= i %>
+                                                </label>
+                                                <input id="file-upload" name='upload_cont_img' type="file" style="display:none;">
+                                            </div>
+                                        </div>
                                     </div>
 
 
-                                    <div id="audio_area_<%= i %>" class="w-100">
+                                    <div id="audio_area_<%= i %>" class="w-100" style="display: none;">
                                         <input type="hidden" name="audio_result_<%= i %>" />
                                         <div class="d-flex align-items-center mb-1">
                                             <audio id="audio_player_<%= i %>" controls></audio>
@@ -86,23 +88,40 @@
 
 <script>
     async function sendRecordingToCheck(formData, index) {
+        const recordArea = $(`#record_area_${index}`);
+        const audioArea = $(`#audio_area_${index}`);
+        const audioResult = $(`input[name="audio_result_${index}"]`);
+
         const headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': `Bearer ${accessToken}`,
         };
+        let isValid;
         try {
             const res = await axios.post(API_URL2 + '/api/voicebio/enroll/add_file', formData, { headers });
             if (!res || !res.data) throw new Error('Lỗi ngoại lệ');
             const { status, is_valid } = res.data;
             if (status != 0) throw new Error('Lỗi ngoại lệ');
 
-            return res.data;
+            isValid = (is_valid) ? true : false;
         } catch (err) {
-            return {
-                "status": 0,
-                "is_valid": false
-            }
+            isValid = false;
         }
+
+
+        // Đẩy kết quả check audio
+        if (isValid) {
+            audioResult.val(1);
+            audioArea.find('.result_text').removeClass('text-danger').addClass('text-success').html('Ghi âm trùng khớp!');
+            audioArea.find('.result_icon').removeClass('text-danger').addClass('text-success ph-check-circle');
+        } else {
+            audioResult.val(0);
+            audioArea.find('.result_text').removeClass('text-success').addClass('text-danger').html('Ghi âm không trùng khớp!');
+            audioArea.find('.result_icon').removeClass('text-success').addClass('text-danger ph-warning-circle');
+        }
+
+        recordArea.hide();
+        audioArea.show();
     }
 
     function retryAction(index) {
@@ -118,10 +137,6 @@
     const mediaRecorder = [];
 
     function startRecording(index) {
-        const recordArea = $(`#record_area_${index}`);
-        const audioArea = $(`#audio_area_${index}`);
-        const audioResult = $(`input[name="audio_result_${index}"]`);
-
         const chunks = [];
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
@@ -141,22 +156,7 @@
                     formData.append('user_code', user_code);
                     formData.append('text', $(`input[name='text_input_${index}']`).val());
 
-                    const { is_valid } = await sendRecordingToCheck(formData, index);
-
-                    // Đẩy kết quả check audio
-                    if (is_valid) {
-                        audioResult.val(1);
-                        audioArea.find('.result_text').removeClass('text-danger').addClass('text-success').html('Ghi âm trùng khớp!');
-                        audioArea.find('.result_icon').removeClass('text-danger').addClass('text-success ph-check-circle');
-                    } else {
-                        audioResult.val(0);
-                        audioArea.find('.result_text').removeClass('text-success').addClass('text-danger').html('Ghi âm không trùng khớp!');
-                        audioArea.find('.result_icon').removeClass('text-success').addClass('text-danger ph-warning-circle');
-                    }
-
-                    recordArea.hide();
-                    audioArea.show();
-                    return;
+                    return sendRecordingToCheck(formData, index);
                 }
 
                 mediaRecorder[index].start();
