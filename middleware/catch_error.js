@@ -1,3 +1,4 @@
+// Bắt các lỗi ngoại lệ và hiển thị trang 404
 module.exports = async (ctx, next) => {
     try {
         await next();

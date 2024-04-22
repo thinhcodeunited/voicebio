@@ -32,7 +32,7 @@ render(app, {
 });
 app.use(serve(path.join(__dirname, '/public')));
 
-// End point
+// Bắt các lỗi có thể xảy ra
 const catchError = require('./middleware/catch_error');
 app.use(catchError);
 

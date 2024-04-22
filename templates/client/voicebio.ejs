@@ -89,6 +89,7 @@
 </div>
 
 <script>
+    // Gửi file ghi âm lên API để thêm vào người dùng
     async function sendRecordingToCheck(formData, index) {
         const recordArea = $(`#record_area_${index}`);
         const audioArea = $(`#audio_area_${index}`);
@@ -173,6 +174,7 @@
         mediaRecorder[index].stop();
     }
 
+    // Thực hiện ghi âm
     const recordAction = (ele) => {
         const index = $(ele).data('index');
         if ($("input[name='customer_name']").val() == '') {
@@ -191,6 +193,7 @@
         }
     }
 
+    // Đăng ký khi đã đủ thông tin
     const registerAction = async (ele) => {
         for (let i = 1; i <= listText.length; i++) {
             if ($(`input[name="audio_result_${i}"`).val() != 1) {
@@ -219,6 +222,7 @@
         }
     }
 
+    // Upload file ghi âm
     $('#file-upload').change(function (event) {
         const index = $(this).data('index');
         const file = event.target.files[0];

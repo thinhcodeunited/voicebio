@@ -7,8 +7,8 @@ router.use(authRouter);
 const checkAuthMiddleware = require('../middleware/authenticate');
 router.use(checkAuthMiddleware);
 
+ // Chưa có dashboard sẽ redirect về customer
 router.get('/', (ctx) => {
-    // Chưa có dashboard sẽ redirect về customer
     return ctx.redirect('/customer');
 });
 

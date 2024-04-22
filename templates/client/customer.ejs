@@ -180,6 +180,7 @@
 
 
     $(document).ready(function () {
+        // Gửi form để tạo người dùng
         $("#registerForm").submit(async function (event) {
             event.preventDefault();
 
@@ -200,6 +201,7 @@
         });
 
 
+        // Hành động reset voice, sẽ gửi API để reset
         $('body').on('click', 'a#reset-voice', async function () {
             try {
                 const user_code = $("input[name='customer_phone']").val();

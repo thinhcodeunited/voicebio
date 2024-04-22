@@ -14,6 +14,7 @@ module.exports = async (ctx) => {
     }
 
     try {
+        // Gửi thông tin lên API để tạo khách hàng
         const payload = querystring.stringify({
             "user_code": customer_phone,
             "name": customer_name,
